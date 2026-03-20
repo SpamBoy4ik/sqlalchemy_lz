@@ -700,6 +700,7 @@ def task12():
 
 def task13():
     year_start = date(date.today().year, 1, 1)
+    # отнимаем даты и после сравниваем в select
     sel = select(TEACH)
     for teacher in session.scalars(sel):
         delta = year_start - teacher.br_date
@@ -709,6 +710,7 @@ def task13():
 
 def task14():
     year_start = date(date.today().year, 1, 1)
+    # отнимаем даты и после сравниваем в select
     sel = select(TEACH)
     for teacher in session.scalars(sel.order_by(TEACH.last_name)):
         delta = year_start - teacher.br_date
@@ -717,10 +719,9 @@ def task14():
 
 
 def task15():
-    sel = select(TEACH)
+    sel = select(TEACH).where(extract('MONTH', TEACH.br_date) == 10)
     for teacher in session.scalars(sel.order_by(TEACH.br_date)):
-        if teacher.br_date.month == 10:
-            print(teacher.last_name)
+        print(teacher.last_name)
 
 
 engine.dispose()
