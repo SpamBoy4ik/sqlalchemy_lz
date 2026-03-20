@@ -1,6 +1,6 @@
-from datetime import date
+from datetime import date, timedelta
 
-from sqlalchemy import NVARCHAR, Date, DateTime, create_engine, func, select
+from sqlalchemy import NVARCHAR, Date, DateTime, create_engine, extract, func, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 
 # Создание подключения к БД: 'Тип_БД+драйвер://пользователь:пароль@хост/имя_БД?driver=ODBC+driver+17+for+SQL+Server'
@@ -651,11 +651,12 @@ def task8():
 
 def task9():
     today = date.today()
-    sel = select(TEACH).where((TEACH.s_name.is_(None)))
+    min_year = today - timedelta(days=3 * 365)
+    sel = select(TEACH).where(
+        (TEACH.s_name.is_(None)) & (TEACH.start_work_date <= min_year)
+    )
     for teacher in session.scalars(sel):
-        delta = today - teacher.start_work_date
-        if delta.days > 3 * 365:
-            print(teacher.last_name)
+        print(teacher.last_name)
 
 
 def task10():
@@ -700,26 +701,24 @@ def task12():
 
 def task13():
     year_start = date(date.today().year, 1, 1)
-    # отнимаем даты и после сравниваем в select
-    sel = select(TEACH)
+    min_year = year_start - timedelta(days=30 * 365)
+    sel = select(TEACH).where(TEACH.br_date <= min_year)
     for teacher in session.scalars(sel):
-        delta = year_start - teacher.br_date
-        if delta.days > 30 * 365:
-            print(teacher.last_name)
+        print(teacher.last_name)
 
 
 def task14():
-    year_start = date(date.today().year, 1, 1)
-    # отнимаем даты и после сравниваем в select
-    sel = select(TEACH)
+    today = date.today()
+    min_year = today - timedelta(days=35 * 365)
+    max_year = today - timedelta(days=40 * 365)
+    sel = select(TEACH).where((TEACH.br_date <= min_year) & (TEACH.br_date >= max_year))
     for teacher in session.scalars(sel.order_by(TEACH.last_name)):
-        delta = year_start - teacher.br_date
-        if delta.days > 35 * 365 and delta.days < 40 * 365:
-            print(teacher.last_name)
+        print(teacher.last_name)
+        print(teacher.br_date)
 
 
 def task15():
-    sel = select(TEACH).where(extract('MONTH', TEACH.br_date) == 10)
+    sel = select(TEACH).where(extract("MONTH", TEACH.br_date) == 10)
     for teacher in session.scalars(sel.order_by(TEACH.br_date)):
         print(teacher.last_name)
 
