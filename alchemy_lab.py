@@ -43,8 +43,6 @@ class TEACH(Base):
     start_work_date: Mapped[DateTime] = mapped_column(Date, nullable=False)
 
 
-Base.metadata.create_all(engine)
-
 stud_data_list = [
     ("Стрынгель", "К", None, "заочная", "ФПК", 1, 300, 100, "19831212", "20160901", 8),
     ("Козлова", "Д", "Е", "заочная", "ФПК", 2, 300, 100, "19831012", "20150901", 8.4),
@@ -512,10 +510,6 @@ teach_data_list = [
 ]
 
 
-Session = sessionmaker(bind=engine)
-session = Session()
-
-
 def insert_stud():
     for stud in stud_data_list:
         student = STUD(
@@ -551,10 +545,6 @@ def insert_teach():
         )
         session.add(teacher)
     session.commit()
-
-
-insert_stud()
-insert_teach()
 
 
 def task1():
@@ -722,22 +712,26 @@ def task15():
         print(teacher.last_name)
 
 
-task1()
-task2()
-task3()
-task4()
-task5()
-task6()
-task7()
-task8()
-task9()
-task10()
-task11()
-task12()
-task13()
-task14()
-task15()
-
-
-session.close()
-engine.dispose()
+if __name__ == "__main__":
+    # Base.metadata.create_all(engine)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    # insert_stud()
+    # insert_teach()
+    # task1()
+    # task2()
+    # task3()
+    # task4()
+    # task5()
+    # task6()
+    # task7()
+    # task8()
+    # task9()
+    # task10()
+    # task11()
+    # task12()
+    # task13()
+    # task14()
+    # task15()
+    session.close()
+    engine.dispose()
